@@ -5,8 +5,9 @@ const TOKEN = {
   text: "#1A1A1A",
   accent: "#C9A96E",
   secondary: "#E8E8E4",
-  muted: "#9A9A94",       // kept for decorative/non-text use
-  mutedText: "#6B6B64",   // WCAG AA on white (4.6:1) — use for all readable muted text
+  muted: "#9A9A94",       // decorative only — SVG strokes, dividers, disabled states
+  mutedText: "#5A5A5A",   // body/secondary readable text — passes WCAG AA
+  subtle: "#8A7D6B",      // warm mid-tone for taglines, placeholders, light UI labels
   rangeBg: "#F5EDD9",
 };
 
@@ -198,26 +199,40 @@ const GlobalStyles = () => (
     .jet-card:focus-visible { outline: 2px solid #C9A96E; outline-offset: 2px; }
     .recommend-line { animation: recommendIn .6s cubic-bezier(.25,.46,.45,.94) both; }
 
-    input::placeholder { color:#9A9A94; opacity:.7; }
+    input::placeholder { color:#8A7D6B; opacity:.8; }
     input:focus { outline:none; }
 
     /* ── Calendar ── */
     .cal-grid { animation: calendarIn .5s cubic-bezier(.25,.46,.45,.94) both; }
     .cal-day-wrap  { position:relative; display:flex; align-items:center; justify-content:center; }
     .cal-range-bg  { position:absolute; top:0; bottom:0; background:#F5EDD9; pointer-events:none; transition:opacity .3s ease; }
-    .cal-day { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; border-radius:50%; font-family:"Noto Sans",sans-serif; font-size:14px; font-weight:400; cursor:pointer; transition:background .25s ease, color .25s ease, transform .25s ease; border:none; background:transparent; letter-spacing:.02em; flex-shrink:0; }
+    /* Force square cells so border-radius:50% always renders a perfect circle */
+    .cal-day { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; width:36px; height:36px; min-width:36px; border-radius:50%; font-family:"Noto Sans",sans-serif; font-size:14px; font-weight:400; cursor:pointer; transition:background .25s ease, color .25s ease, transform .25s ease; border:none; background:transparent; letter-spacing:.02em; flex-shrink:0; aspect-ratio:1/1; }
     .cal-day:hover:not(.past):not(.empty) { background:rgba(201,169,110,.15); transform:scale(1.08); }
     .cal-day.today-ring   { box-shadow:inset 0 0 0 1.5px #C9A96E; }
     .cal-day.selected-dot { background:#C9A96E !important; color:#fff !important; transform:scale(1.08); }
     .cal-day.past { color:#ADADAA; cursor:default; pointer-events:none; }
     .cal-day:focus-visible { outline: 2px solid #C9A96E; outline-offset: 1px; }
-    .cal-month-nav { background:none; border:none; cursor:pointer; color:#6B6B64; transition:color .25s ease, transform .3s ease; display:flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; }
+    /* Mobile: override width/height but keep aspect-ratio square */
+    @media (max-width: 768px) {
+      .cal-day { width:auto; height:auto; min-width:0; font-size:14px !important; }
+      .cal-day-wrap { aspect-ratio:1/1; }
+    }
+    .cal-month-nav { background:none; border:none; cursor:pointer; color:#5A5A5A; transition:color .25s ease, transform .3s ease; display:flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; }
     .cal-month-nav:hover { color:#1A1A1A; transform:scale(1.1); }
     .cal-month-nav:disabled { opacity:.25; cursor:default; transform:none; }
     .cal-month-nav:focus-visible { outline: 2px solid #C9A96E; outline-offset: 2px; }
 
+    /* ── Jet card mobile — proper stacked layout ── */
+    @media (max-width: 768px) {
+      .jet-card { flex-direction: column !important; }
+      .jet-card-image { width: 100% !important; height: 120px !important; padding: 20px !important; border-right: none !important; border-bottom: 1px solid #E8E8E4 !important; flex-shrink: 0 !important; }
+      .jet-card-body { flex: unset !important; width: 100% !important; padding: 16px 18px 18px !important; display: block !important; }
+      .jet-card-divider { display: none !important; }
+    }
+
     /* ── Time stepper ── */
-    .time-stepper-btn { background:none; border:none; cursor:pointer; color:#6B6B64; transition:color .25s ease, transform .2s ease; display:flex; align-items:center; justify-content:center; line-height:1; min-width:44px; min-height:36px; }
+    .time-stepper-btn { background:none; border:none; cursor:pointer; color:#5A5A5A; transition:color .25s ease, transform .2s ease; display:flex; align-items:center; justify-content:center; line-height:1; min-width:44px; min-height:36px; }
     .time-stepper-btn:hover { color:#C9A96E; transform:scale(1.15); }
     .time-stepper-btn:focus-visible { outline: 2px solid #C9A96E; outline-offset: 2px; }
     .time-value-btn   { font-family:"Cormorant Garamond",serif; font-size:42px; font-weight:300; color:#1A1A1A; letter-spacing:.02em; line-height:1; min-width:62px; text-align:center; background:none; border:none; cursor:text; padding:0; transition:color .2s ease; border-bottom:1.5px solid transparent; }
@@ -250,7 +265,7 @@ const GlobalStyles = () => (
 
     /* ── Notes / textarea fields ── */
     .notes-field { width:100%; border:none; background:transparent; resize:none; font-family:"Noto Sans",sans-serif; font-size:14px; font-weight:300; color:#1A1A1A; letter-spacing:.02em; line-height:1.7; padding:0; }
-    .notes-field::placeholder { color:#6B6B64; opacity:1; }
+    .notes-field::placeholder { color:#8A7D6B; opacity:1; }
     .notes-field:focus { outline:none; }
     .notes-underline { height:1px; background:#E8E8E4; transition:background .4s ease; margin-top:10px; }
     .notes-underline.focused { background:#C9A96E; }
@@ -287,16 +302,10 @@ const GlobalStyles = () => (
       .swap-btn-wrap { align-self: center !important; margin-top: 0 !important; }
       .swap-btn { width: 44px !important; height: 44px !important; }
 
-      /* Jet cards */
-      .jet-card-inner { flex-direction: column !important; }
-      .jet-card-image { width: 100% !important; padding: 24px !important; border-right: none !important; border-bottom: 1px solid #E8E8E4 !important; }
-      .jet-card-body  { padding: 18px 20px 20px !important; }
-
       /* Calendar — full width */
       .cal-grid { grid-template-columns: repeat(7, 1fr) !important; width: 100% !important; }
       .cal-day-header-grid { grid-template-columns: repeat(7, 1fr) !important; width: 100% !important; }
       .cal-day-wrap { width: auto !important; }
-      .cal-day { width: 100% !important; height: 40px !important; font-size: 14px !important; }
 
       /* Dual time — stack vertically */
       .dual-time-row { flex-direction: column !important; align-items: center !important; gap: 32px !important; }
@@ -371,7 +380,7 @@ const TimeStepper = ({ label, hour, minute, ampm, onHourChange, onMinuteChange, 
   const stepMinute = d => onMinuteChange(m => { let n = m   + d * 5; if (n < 0) n = 55; if (n >= 60) n = 0; return n; });
   return (
     <div className="time-block" style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", animationDelay: `${animDelay}s` }}>
-      {label && <div style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 9, letterSpacing: ".28em", textTransform: "uppercase", color: TOKEN.muted, fontWeight: 500, marginBottom: 16 }}>{label}</div>}
+      {label && <div style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 11, letterSpacing: ".28em", textTransform: "uppercase", color: TOKEN.mutedText, fontWeight: 500, marginBottom: 16 }}>{label}</div>}
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
           <button className="time-stepper-btn" onClick={() => stepHour(1)}><ChevUp /></button>
@@ -642,13 +651,13 @@ const PassengerConfig = ({ selectedJet, onCountChange, prefs, onPrefsChange }) =
       </div>
       <div style={{ height: 1, background: TOKEN.secondary, margin: "24px 0 32px", animation: "driftUp .6s cubic-bezier(.25,.46,.45,.94) .2s both" }} />
       <div style={{ animation: "driftUp .6s cubic-bezier(.25,.46,.45,.94) .25s both" }}>
-        <div style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 9, letterSpacing: ".22em", textTransform: "uppercase", color: TOKEN.muted, fontWeight: 500, marginBottom: 4 }}>Preferences</div>
+        <div style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: TOKEN.mutedText, fontWeight: 500, marginBottom: 4 }}>Preferences</div>
         <div>
           {PREF_OPTIONS.map((opt, i) => {
             const active = prefs[opt.id];
             return (
               <div key={opt.id} className="pref-row" onClick={() => togglePref(opt.id)} style={{ animationDelay: `${0.3+i*0.07}s` }}>
-                <span style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 13, fontWeight: 300, color: active ? TOKEN.text : TOKEN.muted, letterSpacing: ".02em", transition: "color .35s ease", userSelect: "none" }}>{opt.label}</span>
+                <span style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 13, fontWeight: 300, color: active ? TOKEN.text : TOKEN.mutedText, letterSpacing: ".02em", transition: "color .35s ease", userSelect: "none" }}>{opt.label}</span>
                 <button className="pref-pill" onClick={e => { e.stopPropagation(); togglePref(opt.id); }} style={{ background: active ? TOKEN.accent : TOKEN.secondary }} aria-pressed={active} aria-label={opt.label}>
                   <div className="pref-pill-thumb" style={{ left: active ? "23px" : "3px" }} />
                 </button>
@@ -659,7 +668,7 @@ const PassengerConfig = ({ selectedJet, onCountChange, prefs, onPrefsChange }) =
       </div>
       <div style={{ height: 1, background: TOKEN.secondary, margin: "32px 0", animation: "driftUp .6s cubic-bezier(.25,.46,.45,.94) .5s both" }} />
       <div style={{ animation: "driftUp .6s cubic-bezier(.25,.46,.45,.94) .55s both" }}>
-        <div style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 9, letterSpacing: ".22em", textTransform: "uppercase", color: notesFocused ? TOKEN.accent : TOKEN.muted, fontWeight: 500, marginBottom: 14, transition: "color .3s ease" }}>Special Requirements</div>
+        <div style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: notesFocused ? TOKEN.accent : TOKEN.mutedText, fontWeight: 500, marginBottom: 14, transition: "color .3s ease" }}>Special Requirements</div>
         <textarea className="notes-field" rows={3} value={notes} onChange={e => setNotes(e.target.value)} onFocus={() => setNotesFocused(true)} onBlur={() => setNotesFocused(false)} placeholder="Any additional passenger requirements..." />
         <div className={`notes-underline${notesFocused?" focused":""}`} />
       </div>
@@ -690,11 +699,11 @@ const JetCard = ({ jet, selected, onSelect, delay }) => (
     aria-pressed={selected}
     aria-label={`Select ${jet.category}: ${jet.description}`}
     onKeyDown={e => (e.key === "Enter" || e.key === " ") && onSelect(jet.id)}
-    style={{ display: "flex", alignItems: "stretch", background: "#FFFFFF", border: `1px solid ${selected?TOKEN.accent:TOKEN.secondary}`, borderLeft: `3px solid ${selected?TOKEN.accent:"transparent"}`, borderRadius: 2, boxShadow: selected?"0 4px 24px rgba(201,169,110,.10)":"0 1px 4px rgba(26,26,26,.04)", animation: `driftUp .7s cubic-bezier(.25,.46,.45,.94) ${delay}s both`, overflow: "hidden" }}>
+    style={{ display: "flex", flexDirection: "row", alignItems: "stretch", background: "#FFFFFF", border: `1px solid ${selected?TOKEN.accent:TOKEN.secondary}`, borderLeft: `3px solid ${selected?TOKEN.accent:"transparent"}`, borderRadius: 2, boxShadow: selected?"0 4px 24px rgba(201,169,110,.10)":"0 1px 4px rgba(26,26,26,.04)", animation: `driftUp .7s cubic-bezier(.25,.46,.45,.94) ${delay}s both`, overflow: "hidden" }}>
     <div className="jet-card-image" style={{ width: 168, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, background: selected?"rgba(201,169,110,.04)":"transparent", transition: "background .4s ease" }}>
       <JetSVG width={jet.svgWidth} selected={selected} />
     </div>
-    <div style={{ width: 1, alignSelf: "stretch", background: TOKEN.secondary, opacity: 0.5, flexShrink: 0 }} />
+    <div className="jet-card-divider" style={{ width: 1, alignSelf: "stretch", background: TOKEN.secondary, opacity: 0.5, flexShrink: 0 }} />
     <div className="jet-card-body" style={{ flex: 1, minWidth: 0, padding: "20px 22px" }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
         <h3 style={{ fontFamily: "Cormorant Garamond,serif", fontSize: 21, fontWeight: 400, color: TOKEN.text, letterSpacing: ".01em", lineHeight: 1 }}>{jet.category}</h3>
@@ -836,19 +845,19 @@ const ProgressRail = ({ currentStep }) => {
   if (isMobile) {
     return (
       <div className="zenith-progress progress-rail-mobile" style={{ width: "100%", maxWidth: 680, margin: "0 auto", padding: "0 20px" }}>
-        {/* "Step X of 7" label */}
-        <div style={{ textAlign: "center", marginBottom: 10 }}>
-          <span style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 11, fontWeight: 400, letterSpacing: ".18em", textTransform: "uppercase", color: TOKEN.mutedText }}>
-            Step {currentStep} of {STEPS.length}
-          </span>
-        </div>
-        {/* Current step name */}
-        <div style={{ textAlign: "center", marginBottom: 14 }}>
-          <span style={{ fontFamily: "Cormorant Garamond,serif", fontSize: 18, fontWeight: 400, color: TOKEN.text, letterSpacing: ".06em" }}>
+        {/* Step name — prominent, centered */}
+        <div style={{ textAlign: "center", marginBottom: 6 }}>
+          <span style={{ fontFamily: "Cormorant Garamond,serif", fontSize: 20, fontWeight: 400, color: TOKEN.text, letterSpacing: ".06em" }}>
             {activeStep?.label}
           </span>
         </div>
-        {/* Dot row */}
+        {/* "Step X of 7" counter */}
+        <div style={{ textAlign: "center", marginBottom: 16 }}>
+          <span style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 11, fontWeight: 400, letterSpacing: ".18em", textTransform: "uppercase", color: TOKEN.subtle }}>
+            Step {currentStep} of {STEPS.length}
+          </span>
+        </div>
+        {/* Dot row — visually separated from text above */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0 }}>
           {STEPS.map((step, i) => {
             const isCompleted = step.id < currentStep;
@@ -978,7 +987,7 @@ const CategoryCard = ({ category, quantities, onQtyChange, customRequest, onCust
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 22, fontWeight: 400, color: disabled ? TOKEN.muted : TOKEN.text, letterSpacing: ".02em", lineHeight: 1.1, transition: "color .5s ease" }}>{category.title}</div>
-          <div style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 11, fontWeight: 300, color: TOKEN.muted, letterSpacing: ".03em", marginTop: 4 }}>{category.description}</div>
+          <div style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 13, fontWeight: 300, color: TOKEN.mutedText, letterSpacing: ".03em", marginTop: 4 }}>{category.description}</div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
           {hasItems && !disabled && (
@@ -1006,7 +1015,7 @@ const CategoryCard = ({ category, quantities, onQtyChange, customRequest, onCust
 
           {/* Custom request field */}
           <div style={{ opacity: isOpen ? 1 : 0, transform: isOpen ? "translateY(0)" : "translateY(6px)", transition: `opacity .5s ease ${category.items.length * 0.07 + 0.08}s, transform .5s cubic-bezier(.25,.46,.45,.94) ${category.items.length * 0.07 + 0.08}s`, marginTop: 20 }}>
-            <div style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 9, letterSpacing: ".22em", textTransform: "uppercase", color: reqFocused ? TOKEN.accent : TOKEN.muted, fontWeight: 500, marginBottom: 12, transition: "color .3s ease" }}>
+            <div style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: reqFocused ? TOKEN.accent : TOKEN.mutedText, fontWeight: 500, marginBottom: 12, transition: "color .3s ease" }}>
               Custom Request
             </div>
             <textarea
@@ -1163,7 +1172,7 @@ const CateringModule = ({
       }}>
         <div style={{ height: 1, background: TOKEN.secondary, margin: "36px 0 32px" }} />
         <div>
-          <div style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 9, letterSpacing: ".22em", textTransform: "uppercase", color: dietaryFocused ? TOKEN.accent : TOKEN.muted, fontWeight: 500, marginBottom: 14, transition: "color .3s ease" }}>
+          <div style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 11, letterSpacing: ".22em", textTransform: "uppercase", color: dietaryFocused ? TOKEN.accent : TOKEN.mutedText, fontWeight: 500, marginBottom: 14, transition: "color .3s ease" }}>
             Dietary Requirements
           </div>
           <textarea
@@ -1187,7 +1196,7 @@ const CateringModule = ({
               <circle cx="7.5" cy="7.5" r="6.5" stroke={TOKEN.muted} strokeWidth="1" />
               <path d="M4.5 7.5h6" stroke={TOKEN.muted} strokeWidth="1" strokeLinecap="round" />
             </svg>
-            <p style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 12, fontWeight: 300, color: TOKEN.muted, letterSpacing: ".04em", fontStyle: "italic" }}>
+            <p style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 14, fontWeight: 300, color: TOKEN.mutedText, letterSpacing: ".04em", fontStyle: "italic" }}>
               No catering service requested
             </p>
           </div>
@@ -1198,7 +1207,7 @@ const CateringModule = ({
               <path d="M7.5 4.5v3.5l2 2" stroke={TOKEN.accent} strokeWidth="1" strokeLinecap="round" />
             </svg>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 12, fontWeight: 300, color: TOKEN.text, letterSpacing: ".04em", lineHeight: 1.8 }}>
+              <p style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 14, fontWeight: 300, color: TOKEN.text, letterSpacing: ".04em", lineHeight: 1.8 }}>
                 {summary.map((line, i) => (
                   <span key={line.name}>
                     <span style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 15, fontWeight: 400 }}>{line.qty > 1 ? `${line.qty}× ` : ""}{line.name}</span>
@@ -1207,12 +1216,12 @@ const CateringModule = ({
                 ))}
               </p>
               {dietary.trim() && (
-                <p style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 10.5, fontWeight: 300, color: TOKEN.muted, letterSpacing: ".03em", fontStyle: "italic", marginTop: 5, lineHeight: 1.6 }}>Note: {dietary}</p>
+                <p style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 13, fontWeight: 300, color: TOKEN.mutedText, letterSpacing: ".03em", fontStyle: "italic", marginTop: 5, lineHeight: 1.6 }}>Note: {dietary}</p>
               )}
             </div>
           </div>
         ) : (
-          <p style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 11, fontWeight: 300, color: TOKEN.muted, letterSpacing: ".06em", fontStyle: "italic" }}>
+          <p style={{ fontFamily: "Noto Sans, sans-serif", fontSize: 14, fontWeight: 300, color: TOKEN.mutedText, letterSpacing: ".06em", fontStyle: "italic" }}>
             Select items from any category to build your menu
           </p>
         )}
@@ -1328,8 +1337,8 @@ const TransportCard = ({ option, selected, onSelect, animDelay, children }) => {
             )}
           </div>
           <div style={{
-            fontFamily: "Noto Sans, sans-serif", fontSize: 11, fontWeight: 300,
-            color: TOKEN.muted, letterSpacing: ".03em",
+            fontFamily: "Noto Sans, sans-serif", fontSize: 13, fontWeight: 300,
+            color: TOKEN.mutedText, letterSpacing: ".03em",
           }}>
             {option.description}
           </div>
@@ -1386,9 +1395,9 @@ const GroundTransport = ({
     transition: "background .4s ease",
   });
   const fieldLabel = (focused) => ({
-    fontFamily: "Noto Sans, sans-serif", fontSize: 9,
+    fontFamily: "Noto Sans, sans-serif", fontSize: 11,
     letterSpacing: ".22em", textTransform: "uppercase", fontWeight: 500,
-    color: focused ? TOKEN.accent : TOKEN.muted,
+    color: focused ? TOKEN.accent : TOKEN.mutedText,
     marginBottom: 12, transition: "color .3s ease",
   });
 
@@ -1470,8 +1479,8 @@ const GroundTransport = ({
               transition: "opacity .5s ease .16s, transform .5s cubic-bezier(.25,.46,.45,.94) .16s",
             }}>
               <div style={{
-                fontFamily: "Noto Sans, sans-serif", fontSize: 9, letterSpacing: ".22em",
-                textTransform: "uppercase", fontWeight: 500, color: TOKEN.muted, marginBottom: 12,
+                fontFamily: "Noto Sans, sans-serif", fontSize: 11, letterSpacing: ".22em",
+                textTransform: "uppercase", fontWeight: 500, color: TOKEN.mutedText, marginBottom: 12,
               }}>
                 Vehicle Preference
               </div>
@@ -1576,15 +1585,15 @@ const GroundTransport = ({
             )}
 
             <p style={{
-              fontFamily: "Noto Sans, sans-serif", fontSize: 12, fontWeight: 300,
-              color: selected === "none" ? TOKEN.muted : TOKEN.text,
+              fontFamily: "Noto Sans, sans-serif", fontSize: 14, fontWeight: 300,
+              color: selected === "none" ? TOKEN.mutedText : TOKEN.text,
               letterSpacing: ".04em", lineHeight: 1.8, fontStyle: selected === "none" ? "italic" : "normal",
             }}>
               {confirmLine.split("  ·  ").map((segment, i, arr) => (
                 <span key={i}>
                   <span style={{
                     fontFamily: "Cormorant Garamond, serif", fontSize: 15, fontWeight: 400,
-                    color: selected === "none" ? TOKEN.muted : (i === 0 ? TOKEN.text : TOKEN.accent),
+                    color: selected === "none" ? TOKEN.mutedText : (i === 0 ? TOKEN.text : TOKEN.accent),
                   }}>
                     {segment}
                   </span>
@@ -1597,8 +1606,8 @@ const GroundTransport = ({
                 <>
                   <br />
                   <span style={{
-                    fontFamily: "Noto Sans, sans-serif", fontSize: 10.5, fontWeight: 300,
-                    color: TOKEN.muted, letterSpacing: ".03em", fontStyle: "italic",
+                    fontFamily: "Noto Sans, sans-serif", fontSize: 13, fontWeight: 300,
+                    color: TOKEN.mutedText, letterSpacing: ".03em", fontStyle: "italic",
                   }}>
                     Note: {notes}
                   </span>
@@ -1608,8 +1617,8 @@ const GroundTransport = ({
           </div>
         ) : (
           <p style={{
-            fontFamily: "Noto Sans, sans-serif", fontSize: 11, fontWeight: 300,
-            color: TOKEN.muted, letterSpacing: ".06em", fontStyle: "italic",
+            fontFamily: "Noto Sans, sans-serif", fontSize: 14, fontWeight: 300,
+            color: TOKEN.mutedText, letterSpacing: ".06em", fontStyle: "italic",
           }}>
             Select a transport option to continue
           </p>
@@ -1724,34 +1733,37 @@ const TripSummary = ({ from, to, tripType, selectedJet, passengerCount, catering
           width: 64, height: 64, borderRadius: "50%",
           border: `1px solid ${TOKEN.accent}`,
           display: "flex", alignItems: "center", justifyContent: "center",
-          marginBottom: 32,
+          marginBottom: 28,
           animation: "driftUp .8s cubic-bezier(.25,.46,.45,.94) .1s both",
         }}>
           <svg width="24" height="17" viewBox="0 0 24 17" fill="none">
             <path d="M2 8L9 15L22 2" stroke={TOKEN.accent} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
+        {/* Heading — 2.5rem, balanced against 16px body */}
         <div style={{
-          fontFamily: "Cormorant Garamond, serif", fontSize: 46, fontWeight: 300,
-          color: TOKEN.text, letterSpacing: ".03em", lineHeight: 1.05,
+          fontFamily: "Cormorant Garamond, serif", fontSize: "2.5rem", fontWeight: 300,
+          color: TOKEN.text, letterSpacing: ".03em", lineHeight: 1.1,
           animation: "driftUp .9s cubic-bezier(.25,.46,.45,.94) .2s both",
         }}>
           Booking confirmed.
         </div>
+        {/* Gold rule */}
         <div style={{
-          width: 40, height: 1, background: TOKEN.accent, margin: "22px auto",
+          width: 40, height: 1, background: TOKEN.accent, margin: "20px auto",
           animation: "driftUp .8s cubic-bezier(.25,.46,.45,.94) .35s both",
         }} />
+        {/* Body text — 16px minimum */}
         <p style={{
-          fontFamily: "Noto Sans, sans-serif", fontSize: 14, fontWeight: 300,
-          color: TOKEN.mutedText, letterSpacing: ".06em", lineHeight: 1.9, maxWidth: 340,
+          fontFamily: "Noto Sans, sans-serif", fontSize: 16, fontWeight: 300,
+          color: TOKEN.mutedText, letterSpacing: ".04em", lineHeight: 1.8, maxWidth: 340,
           animation: "driftUp .8s cubic-bezier(.25,.46,.45,.94) .45s both",
         }}>
           Your dedicated concierge will be in touch within 2 hours to finalise every detail.
         </p>
         <p style={{
-          fontFamily: "Cormorant Garamond, serif", fontSize: 16, fontStyle: "italic",
-          color: TOKEN.accent, letterSpacing: ".08em", marginTop: 36,
+          fontFamily: "Cormorant Garamond, serif", fontSize: 17, fontStyle: "italic",
+          color: TOKEN.accent, letterSpacing: ".08em", marginTop: 32,
           animation: "driftUp .8s cubic-bezier(.25,.46,.45,.94) .6s both",
         }}>
           Above everything.
@@ -2059,7 +2071,7 @@ export default function BookingShell() {
             </div>
           )}
         </div>
-        <div style={{ marginTop: 36, fontFamily: "Cormorant Garamond,serif", fontSize: 14, fontStyle: "italic", color: TOKEN.mutedText, letterSpacing: ".06em", opacity: 0.8 }}>Above everything.</div>
+        <div style={{ marginTop: 36, fontFamily: "Cormorant Garamond,serif", fontSize: 14, fontStyle: "italic", color: TOKEN.subtle, letterSpacing: ".06em" }}>Above everything.</div>
       </div>
     </>
   );
