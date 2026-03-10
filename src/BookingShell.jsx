@@ -844,21 +844,21 @@ const ProgressRail = ({ currentStep }) => {
 
   if (isMobile) {
     return (
-      <div className="zenith-progress progress-rail-mobile" style={{ width: "100%", maxWidth: 680, margin: "0 auto", padding: "0 20px" }}>
-        {/* Step name — prominent, centered */}
-        <div style={{ textAlign: "center", marginBottom: 6 }}>
-          <span style={{ fontFamily: "Cormorant Garamond,serif", fontSize: 20, fontWeight: 400, color: TOKEN.text, letterSpacing: ".06em" }}>
-            {activeStep?.label}
-          </span>
-        </div>
-        {/* "Step X of 7" counter */}
-        <div style={{ textAlign: "center", marginBottom: 16 }}>
-          <span style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 11, fontWeight: 400, letterSpacing: ".18em", textTransform: "uppercase", color: TOKEN.subtle }}>
+      <div className="zenith-progress progress-rail-mobile" style={{ width: "100%", maxWidth: 680, margin: "0 auto", padding: "0 24px" }}>
+        {/* Step number — top, small caps */}
+        <div style={{ textAlign: "center", marginBottom: 8 }}>
+          <span style={{ fontFamily: "Noto Sans,sans-serif", fontSize: 11, fontWeight: 500, letterSpacing: ".28em", textTransform: "uppercase", color: TOKEN.subtle }}>
             Step {currentStep} of {STEPS.length}
           </span>
         </div>
-        {/* Dot row — visually separated from text above */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0 }}>
+        {/* Step name — large, prominent */}
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <span style={{ fontFamily: "Cormorant Garamond,serif", fontSize: 22, fontWeight: 400, color: TOKEN.text, letterSpacing: ".06em" }}>
+            {activeStep?.label}
+          </span>
+        </div>
+        {/* Dot rail — well spaced below text */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "0 8px" }}>
           {STEPS.map((step, i) => {
             const isCompleted = step.id < currentStep;
             const isActive    = step.id === currentStep;
@@ -866,13 +866,23 @@ const ProgressRail = ({ currentStep }) => {
             return (
               <div key={step.id} style={{ display: "flex", alignItems: "center", flex: isLast ? "0 0 auto" : 1 }}>
                 <div className="step-node" style={{
-                  width: isActive ? 10 : 8, height: isActive ? 10 : 8,
-                  borderRadius: "50%", flexShrink: 0,
+                  width: isActive ? 12 : 8,
+                  height: isActive ? 12 : 8,
+                  borderRadius: "50%",
+                  flexShrink: 0,
                   background: isActive ? TOKEN.accent : isCompleted ? TOKEN.accent : TOKEN.secondary,
-                  opacity: isCompleted ? 0.6 : 1,
+                  opacity: isCompleted ? 0.65 : 1,
                   transition: "background .5s ease, width .3s ease, height .3s ease",
                 }} />
-                {!isLast && <div className="step-connector" style={{ flex: 1, height: 1, background: isCompleted ? TOKEN.accent : TOKEN.secondary, opacity: isCompleted ? 0.5 : 1 }} />}
+                {!isLast && (
+                  <div className="step-connector" style={{
+                    flex: 1,
+                    height: 1,
+                    background: isCompleted ? TOKEN.accent : TOKEN.secondary,
+                    opacity: isCompleted ? 0.5 : 1,
+                    margin: "0 3px",
+                  }} />
+                )}
               </div>
             );
           })}
